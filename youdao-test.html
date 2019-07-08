@@ -1,0 +1,58 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8"/>
+</head>
+<body>
+<div>可打开浏览器控制台查看结果</div>
+<script src="http://shared.ydstatic.com/js/jquery/jquery-3.1.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/emn178/js-sha256/build/sha256.min.js"></script>
+<script type="text/javascript">
+function getInput(input){
+	if (input.length == 0) {
+		return null;
+	}
+	var result;
+	var len = input.length;
+	if(len <= 20){
+		result = input;
+	}else{
+		var startStr = input.substring(0,10);
+		var endStr = input.substring(len-10,len);
+		result = startStr + len +endStr;
+	}
+	return result;
+
+}
+var appKey = '63d8404e4620a303';
+var key = 'zjnPsikef88rqeEtEv8LfrjQk1HSs9ox';//注意：暴露appSecret，有被盗用造成损失的风险
+var salt = new Date().getTime();
+var curtime=Math.round(new Date().getTime()/1000);
+
+var query = "MISSISSAUGA – Canada’s telecom industry spent three days last week at the 18th annual Canadian Telecom Summit exploring issues that will not only affect its future but will determine how Canadians are served in the years to come.With keynotes from carriers, vendors, the CRTC, the Canadian Wireless Telecommunications Association (CWTA), and Innovation Minister Navdeep Bains, the event looked at everything from 5G technology and security to cellular customer experience, with some lively discussions along the way.Eros Spadotto, executive vice-president of technology strategy and business transformation at Telus, compared telecom to Canada’s national rail system. The technology is not the point, he said. What really matters is the societal change it brings about. The rail system united a country and helped define the Canada of today.He compared the railway of yore to fibre networks and 5G. “It’s the same thing,” he said. “Fibre networks have finally closed distance.” Young people in remote towns no longer have to move to a city to get a career, he noted. With broadband services, they can work from home as software developers, or in remote call centres, or even run their own businesses. “As a parent, that makes me happy,” Spadotto said. “Our kids can stay close by. The death of distance – that’s a social outcome.” And, he added, with the networks being built today, and soon 5G, people anywhere in Canada will have access to higher quality healthcare as technologies such as remote surgery are enabled.";
+// 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
+var from = 'auto';
+var to = 'zh-CHS';
+var str1 = appKey + getInput(query) + salt + curtime +key;
+var sign = sha256(str1);
+console.log(str1);
+$.ajax({
+    url: 'http://openapi.youdao.com/api',
+    type: 'post',
+    dataType: 'jsonp',
+    data: {
+        q: query,
+        appKey: appKey,
+        salt: salt,
+        from: from,
+        to: to,
+		curtime: curtime,
+        sign: sign,
+		signType: "v3"
+    },
+    success: function (data) {
+        console.log(data);
+    }
+});
+
+</script>
+</body>
